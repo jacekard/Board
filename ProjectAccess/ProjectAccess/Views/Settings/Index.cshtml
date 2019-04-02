@@ -1,0 +1,92 @@
+﻿@using ProjectAccess.Areas.Identity.Data
+@model IEnumerable<AppUser>
+@inject Microsoft.AspNetCore.Identity.UserManager<AppUser> userManager
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<h2>Users settings</h2>
+<h3>@Html.ViewBag.CurrentUser</h3><br />
+<table class="table table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                Date of Birth
+            </th>
+            <th>
+                Admin
+            </th>
+            <th>
+                User
+            </th>
+            <th class="text-danger">
+                <span data-toggle="tooltip" data-placement="top" title="Danger Zone">Delete User</span>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appUser in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => appUser.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => appUser.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => appUser.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => appUser.DOB)
+                </td>
+                <td class="text-center">
+                    <div class="custom-control custom-radio">
+                        @if (await userManager.IsInRoleAsync(appUser, RoleNames.Admin))
+                        {
+                            <input type="radio" name="radio-@appUser.Id" class="custom-control-input" id="a-@appUser.Id" user="@appUser.Id" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="radio-@appUser.Id" class="custom-control-input" id="a-@appUser.Id" user="@appUser.Id">
+                        }
+                        <label class="custom-control-label" for="a-@appUser.Id">&nbsp;</label>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="custom-control custom-radio">
+                        @if (await userManager.IsInRoleAsync(appUser, RoleNames.User))
+                        {
+                            <input type="radio" name="radio-@appUser.Id" class="custom-control-input" id="u-@appUser.Id" user="@appUser.Id" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="radio-@appUser.Id" class="custom-control-input" id="u-@appUser.Id" user="@appUser.Id">
+                        }
+                        <label class="custom-control-label" for="u-@appUser.Id">&nbsp;</label>
+                    </div>
+                </td>
+                <td class="text-center bg-danger" data-toggle="tooltip" title="This action will delete user permanently!">
+                    <i style="margin-right:auto;" id="u-@appUser.Id" user="@appUser.Id" class='material-icons'>delete_forever</i>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@appUser.Id">Projects</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="~/js/settings.js"></script>
+
+
